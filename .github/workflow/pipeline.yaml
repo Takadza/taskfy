@@ -1,0 +1,17 @@
+name: taskify
+
+on:
+  push:
+    branch: [ci/cd-pipeline]
+
+    jobs:
+       build-project:
+
+          runs-on: ubuntu-latest
+          steps: 
+            - name: Checkout Code
+              uses: actions/checkout@v2
+            - name: Install NPM dependances
+              run: npm install 
+            - name: Build and Export 
+              run: npm run generate
