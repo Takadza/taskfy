@@ -2,7 +2,7 @@ name: taskify
 
 on:
   push:
-    branch: [ci/cd-pipeline]
+    branch: [master]
 
     jobs:
        build-project:
