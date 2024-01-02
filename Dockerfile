@@ -33,3 +33,11 @@ ENV NODE_ENV=development
 RUN npm install 
 COPY . .
 CMD npm run dev
+
+# Start from the Nginx base image
+FROM nginx:1.23-alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf *
+COPY --from=builder /app/build .
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

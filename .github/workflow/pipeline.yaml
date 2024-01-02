@@ -1,8 +1,8 @@
-name: taskify
+name: CICD
 
 on:
   push:
-    branch: [master]
+    branch: [ec2-docker-deploy]
 
     jobs:
        build-project:
@@ -11,7 +11,21 @@ on:
           steps: 
             - name: Checkout Code
               uses: actions/checkout@v2
-            - name: Install NPM dependances
-              run: npm install 
-            - name: Build and Export 
-              run: npm run generate
+            - name: Login to Docker Hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            - name: Build Docker Image 
+              run: docker build -t ntakadza/taskify
+            - name: Publish image to docker hub
+              run: docker push ntakadza/taskify:latest
+
+      deploy:
+         needs: build
+         run-on: aws-ec2
+         steps:
+           - name: Pull image from docker hub
+             run: docker pull ntakadza/taskify:latest
+           - name: Delete Old Container 
+             run: docker rm -f nextContainer
+           -name: Run docker container
+            run: docker run -d -p 3000:80 --name nextContainer ntakadza/taskify          
+
