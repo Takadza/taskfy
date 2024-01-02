@@ -8,17 +8,17 @@ on:
 jobs:
   build-project:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Set up Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-      
+
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build Docker Image 
+        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - name: Build Docker Image
         run: docker build -t ntakadza/taskify .
       - name: Publish image to Docker Hub
         run: docker push ntakadza/taskify:latest
@@ -31,10 +31,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-      
+
       - name: Pull image from Docker Hub
         run: docker pull ntakadza/taskify:latest
-      - name: Delete Old Container 
+      - name: Delete Old Container
         run: docker rm -f nextContainer || true
       - name: Run Docker Container
         run: docker run -d -p 3000:80 --name nextContainer ntakadza/taskify
