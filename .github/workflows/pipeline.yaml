@@ -9,6 +9,11 @@ jobs:
   build-project:
     runs-on: ubuntu-latest
     steps: 
+      - name: Set up Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Login to Docker Hub
@@ -22,11 +27,14 @@ jobs:
     needs: build-project
     runs-on: aws-ec2
     steps:
+      - name: Set up Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      
       - name: Pull image from Docker Hub
         run: docker pull ntakadza/taskify:latest
       - name: Delete Old Container 
         run: docker rm -f nextContainer || true
       - name: Run Docker Container
         run: docker run -d -p 3000:80 --name nextContainer ntakadza/taskify
-    
-
